@@ -4,7 +4,6 @@ import java.util.*;
 public class Avg {
 
     public static void average(int n, int n1, int n2) {
-        float ave = (n + n1 + n2) / 3.0f;
 
         System.out.println("Average of " + n + " " + n1 + " " + n2 + " is : " + (n + n1 + n2) / 3.0f);
     }
