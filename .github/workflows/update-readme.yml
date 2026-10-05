@@ -1,0 +1,145 @@
+name: Update DSA README
+
+on:
+  push:
+    branches:
+      - main
+      - Main
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update README
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import re
+          import subprocess
+          from pathlib import Path
+
+          readme = Path("README.md")
+
+          if not readme.exists():
+              readme.write_text("# 🚀 Java + DSA Journey\n")
+
+          # Get latest commit message
+          commit_message = subprocess.check_output(
+              ["git", "log", "-1", "--pretty=%s"],
+              text=True
+          ).strip()
+
+          # Detect Day number
+          match = re.search(
+              r'\bday[\s_-]*(\d+)\b',
+              commit_message,
+              re.IGNORECASE
+          )
+
+          if not match:
+              print("No Day number found in commit message.")
+              exit(0)
+
+          day = int(match.group(1))
+
+          # Get Java files changed in this commit
+          changed_files = subprocess.check_output(
+              ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"],
+              text=True
+          ).splitlines()
+
+          java_files = [
+              Path(file).name
+              for file in changed_files
+              if file.endswith(".java")
+          ]
+
+          # Get existing README
+          content = readme.read_text()
+
+          start_marker = "<!-- DSA_PROGRESS_START -->"
+          end_marker = "<!-- DSA_PROGRESS_END -->"
+
+          # Create generated section if it doesn't exist
+          if start_marker not in content:
+              content += f"""
+
+          {start_marker}
+
+          ## 📊 DSA Progress
+
+          **Latest Day:** Day {day}
+
+          ## 🗓️ Daily Progress
+
+          {end_marker}
+          """
+
+          # Extract progress section
+          start = content.index(start_marker)
+          end = content.index(end_marker) + len(end_marker)
+
+          progress = content[start:end]
+
+          # Create today's entry
+          files_text = ", ".join(f"`{f}`" for f in java_files)
+
+          if not files_text:
+              files_text = "Java practice"
+
+          new_entry = f"| Day {day} | {commit_message} | {files_text} |"
+
+          # Avoid duplicate day
+          if f"| Day {day} |" not in progress:
+
+              table_header = "| Day | Topic / Commit | Programs |\n|---|---|---|"
+
+              if table_header not in progress:
+                  progress = progress.replace(
+                      "## 🗓️ Daily Progress",
+                      "## 🗓️ Daily Progress\n\n" + table_header
+                  )
+
+              progress = progress.replace(
+                  end_marker,
+                  new_entry + "\n\n" + end_marker
+              )
+
+          # Update latest day
+          progress = re.sub(
+              r'\*\*Latest Day:\*\* Day \d+',
+              f'**Latest Day:** Day {day}',
+              progress
+          )
+
+          content = content[:start] + progress + content[end:]
+
+          readme.write_text(content)
+
+          print(f"README updated for Day {day}")
+          PY
+
+      - name: Commit README changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+
+          if git diff --cached --quiet; then
+            echo "No README changes."
+          else
+            git commit -m "docs: update README for latest DSA progress"
+            git push
+          fi
