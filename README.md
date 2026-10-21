@@ -40,3 +40,19 @@ Before starting DSA, I built my foundation in Java through basic programming and
 **Java Basics → DSA → Problem Solving → Software Engineering Placements**
 
 Currently building consistency with daily DSA practice using Java. 🚀
+
+
+<!-- DSA_PROGRESS_START -->
+
+## 📊 DSA Progress
+
+**Latest Day:** Day 6
+
+## 🗓️ Daily Progress
+
+| Day | Topic / Commit | Programs |
+|---|---|---|
+
+| Day 6 | Day 6 - Arrays practice | `MaxSubarray.java` |
+
+<!-- DSA_PROGRESS_END -->
