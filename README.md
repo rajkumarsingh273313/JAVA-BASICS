@@ -46,7 +46,7 @@ Currently building consistency with daily DSA practice using Java. 🚀
 
 ## 📊 DSA Progress
 
-**Latest Day:** Day 6
+**Latest Day:** Day 7
 
 ## 🗓️ Daily Progress
 
@@ -54,5 +54,7 @@ Currently building consistency with daily DSA practice using Java. 🚀
 |---|---|---|
 
 | Day 6 | Day 6 - Arrays practice | `MaxSubarray.java` |
+
+| Day 7 | Day 7 - Arrays practice(Rain water trap problem) | `MaxSubarray.java`, `RainWater.java` |
 
 <!-- DSA_PROGRESS_END -->
