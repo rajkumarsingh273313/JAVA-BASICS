@@ -51,10 +51,12 @@ public class MaxSubarray {
         int cs = 0;
         for (int i = 0; i < n; i++) {
             cs = cs + a[i];
+
+            ms = Math.max(ms, cs);
             if (cs < 0) {
                 cs = 0;
             }
-            ms = Math.max(ms, cs);
+
         }
         System.out.println("Maximum sub array is " + ms);
     }
